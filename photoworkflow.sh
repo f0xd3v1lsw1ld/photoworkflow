@@ -53,3 +53,14 @@ for ext in jpg JPG CR2 cr2; do
      echo "no "$ext " files to proceed "
    fi
 done
+
+#cleanup
+pushd /home/$USER/.photoworkflow
+count=`ls -1 *.$ext 2>/dev/null | wc -l`
+if [ $count != 0 ]
+  then
+  #rm all *.jpg files in temp directory
+  #these are files, exiftool found an error during moving to new directory, because these files exist already
+  rm *.jpg
+fi
+popd
