@@ -39,9 +39,9 @@ for ext in jpg JPG CR2 cr2; do
           echo $newfiles" images to proceed"
           #rename the newfiles with exiftool
           exiftool -m "-filename<DateTimeOriginal" -d IMG_%Y-%m-%d-%H_%M_%S%%-c.%%le *.$ext
-
-          #move newfiles with exiftool in your directory structure
-          exiftool -m "-Directory<DateTimeOriginal" -d $working_dir"/%Y/%Y-%m-%d" *.$ext 2>/dev/null
+                  
+          #move newfiles with exiftool in your directory structure, change file extension to lower case
+          exiftool -m "-Directory<DateTimeOriginal" -d $working_dir"/%Y/%Y-%m-%d" *.${ext,,} 2>/dev/null
           popd
 
         else
