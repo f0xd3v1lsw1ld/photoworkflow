@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 #######################################################################################################################################################################
 #The MIT License (MIT)
@@ -18,6 +18,14 @@
 #CHANGE this to your path
 working_dir=/media/noopi/Data/Bilder/DigiCam
 #working_dir=/home/$USER/pictures/
+#working_dir=/home/$USER/Bilder
+
+#check, if working_dir exists, if not exit
+if [ ! -d $working_dir ]
+ then
+    echo "ERROR: $working_dir doesn't exists!"
+    exit -1
+ fi
 
 #loop over image file extensions
 #CHANGE this to for your images
@@ -41,7 +49,7 @@ for ext in jpg JPG CR2 cr2; do
           exiftool -m "-filename<DateTimeOriginal" -d IMG_%Y-%m-%d-%H_%M_%S%%-c.%%le *.$ext
                   
           #move newfiles with exiftool in your directory structure, change file extension to lower case
-          exiftool -m "-Directory<DateTimeOriginal" -d $working_dir"/%Y/%Y-%m-%d" *.${ext,,} 2>/dev/null
+          exiftool -m '-Directory<DateTimeOriginal' -d "$working_dir/%Y/%Y-%m-%d" *.${ext,,} 2>/dev/null
           popd
 
         else
