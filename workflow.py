@@ -91,6 +91,10 @@ def main():
     db_filename = home_dir + 'pictures.db'
     schema_filename = pathname + '/schema.sql'
 
+    if len(sys.argv) == 1:
+        parser.print_help()
+        sys.exit(-1)
+
     if not os.path.exists(home_dir):
         try:
             print("create dir %s" % home_dir)
@@ -115,12 +119,12 @@ def main():
     for file in os.listdir(results.dir):
         if os.path.isfile(file):
             if file.endswith("." + results.type):
-                # print (file)
+                #print (file)
                 md5 = getMd5Sum(results.dir + '/' + file)
                 entry = inDatabase(db_filename, md5)
                 if entry == False:
                     copyFileInWrkDir(results.dir + '/' + file, home_dir)
-                    print (file)
+                    #print (file)
                     # else:
                     #    print("Is in db")
 
