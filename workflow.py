@@ -116,17 +116,31 @@ def main():
             print(e)
             return
 
-    for file in os.listdir(results.dir):
-        if os.path.isfile(file):
-            if file.endswith("." + results.type):
-                #print (file)
-                md5 = getMd5Sum(results.dir + '/' + file)
-                entry = inDatabase(db_filename, md5)
-                if entry == False:
-                    copyFileInWrkDir(results.dir + '/' + file, home_dir)
-                    #print (file)
-                    # else:
-                    #    print("Is in db")
+    # get all files of type results.type of directory results.dir
+    files = [f for f in os.listdir(results.dir) if f.endswith("." + results.type) and os.path.isfile(os.path.join(results.dir, f))]
+    # get number of found files
+    file_counter = len(files)
+    print("calculated checksum and lookup in database")
+    #print("proceed %i files" % file_counter)
+
+    # setup progress bar from https://stackoverflow.com/questions/3160699/python-progress-bar
+    sys.stdout.write("[%s]" % (" " * file_counter))
+    sys.stdout.flush()
+    # after '[' return to start of line
+    sys.stdout.write("\b" * (file_counter + 1))
+
+    # proceed all found files
+    for file in files:
+        md5 = getMd5Sum(results.dir + '/' + file)
+        entry = inDatabase(db_filename, md5)
+        sys.stdout.write("-")
+        sys.stdout.flush()
+        if entry == False:
+            copyFileInWrkDir(results.dir + '/' + file, home_dir)
+            if not os.path.isfile(home_dir + '/' + "newfile"):
+                open(home_dir + '/' + "newfile", 'a').close()
+
+    sys.stdout.write("\n")
 
 
 if __name__ == '__main__':
