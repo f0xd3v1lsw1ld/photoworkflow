@@ -41,7 +41,7 @@ for ext in jpg JPG CR2 cr2; do
       # if there are files with this extension, check if this files were already imported (md5 sum is in database)
       # the newfiles were copied in the temporary directory, to be found here: $home_dir
 
-      python ../workflow.py -t $ext -d "$PWD"
+      python /opt/photoworkflow/workflow.py -t $ext -d "$PWD"
 
       if [ -f $home_dir/newfile ]
         then
