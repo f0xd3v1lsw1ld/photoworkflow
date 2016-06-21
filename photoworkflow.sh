@@ -45,14 +45,14 @@ for ext in jpg JPG CR2 cr2; do
       if [ $newfiles != 0 ]
         then
           #go in the temporary directory
-          pushd $home_dir
+          pushd $home_dir &>/dev/null
 
           #rename the newfiles with exiftool
           exiftool -m "-filename<DateTimeOriginal" -d IMG_%Y-%m-%d-%H_%M_%S%%-c.%%le -progress *.$ext
                   
           #move newfiles with exiftool in your directory structure, change file extension to lower case
           exiftool -m '-Directory<DateTimeOriginal' -d "$working_dir/%Y/%Y-%m-%d" -progress *.${ext,,} 2>/dev/null
-          popd
+          popd &>/dev/null
 
         else
           # there are files with this extension, but this files were already imported
@@ -65,7 +65,7 @@ for ext in jpg JPG CR2 cr2; do
 done
 
 #cleanup
-pushd $home_dir
+pushd $home_dir &>/dev/null
 count=`ls -1 *.$ext 2>/dev/null | wc -l`
 if [ $count != 0 ]
   then
@@ -73,4 +73,4 @@ if [ $count != 0 ]
   #these are files, exiftool found an error during moving to new directory, because these files exist already
   rm *.jpg
 fi
-popd
+popd &>/dev/null
