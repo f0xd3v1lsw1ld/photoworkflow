@@ -40,9 +40,10 @@ for ext in jpg JPG CR2 cr2; do
       echo $count $ext " files to proceed "
       # if there are files with this extension, check if this files were already imported (md5 sum is in database)
       # the newfiles were copied in the temporary directory, to be found here: $home_dir
-      newfiles=`python /opt/photoworkflow/workflow.py -t $ext -d "$PWD" 2>/dev/null | wc -l`
 
-      if [ $newfiles != 0 ]
+      python ../workflow.py -t $ext -d "$PWD"
+
+      if [ -f $home_dir/newfile ]
         then
           #go in the temporary directory
           pushd $home_dir &>/dev/null
@@ -52,6 +53,7 @@ for ext in jpg JPG CR2 cr2; do
                   
           #move newfiles with exiftool in your directory structure, change file extension to lower case
           exiftool -m '-Directory<DateTimeOriginal' -d "$working_dir/%Y/%Y-%m-%d" -progress *.${ext,,} 2>/dev/null
+          rm $home_dir/newfile
           popd &>/dev/null
 
         else
