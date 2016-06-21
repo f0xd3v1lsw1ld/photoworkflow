@@ -19,6 +19,9 @@
 working_dir=/media/noopi/Data/Bilder/DigiCam
 #working_dir=/home/$USER/pictures/
 #working_dir=/home/$USER/Bilder
+#photoworkflow user dir, here are the database and the temporary files stored
+home_dir=/home/$USER/.photoworkflow
+
 
 #check, if working_dir exists, if not exit
 if [ ! -d $working_dir ]
@@ -36,15 +39,14 @@ for ext in jpg JPG CR2 cr2; do
     then
       echo $count $ext " files to proceed "
       # if there are files with this extension, check if this files were already imported (md5 sum is in database)
-      # the newfiles were copied in the temporary directory, to be found here: /home/$USER/.photoworkflow
+      # the newfiles were copied in the temporary directory, to be found here: $home_dir
       newfiles=`python /opt/photoworkflow/workflow.py -t $ext -d "$PWD" 2>/dev/null | wc -l`
 
       if [ $newfiles != 0 ]
         then
           #go in the temporary directory
-          pushd /home/$USER/.photoworkflow
+          pushd $home_dir
 
-          echo $newfiles" images to proceed"
           #rename the newfiles with exiftool
           exiftool -m "-filename<DateTimeOriginal" -d IMG_%Y-%m-%d-%H_%M_%S%%-c.%%le -progress *.$ext
                   
@@ -63,7 +65,7 @@ for ext in jpg JPG CR2 cr2; do
 done
 
 #cleanup
-pushd /home/$USER/.photoworkflow
+pushd $home_dir
 count=`ls -1 *.$ext 2>/dev/null | wc -l`
 if [ $count != 0 ]
   then
