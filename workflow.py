@@ -120,21 +120,26 @@ def main():
     files = [f for f in os.listdir(results.dir) if f.endswith("." + results.type) and os.path.isfile(os.path.join(results.dir, f))]
     # get number of found files
     file_counter = len(files)
-    print("calculated checksum and lookup in database")
+    print("Step 1: calculate checksum and lookup in database")
     #print("proceed %i files" % file_counter)
 
     # setup progress bar from https://stackoverflow.com/questions/3160699/python-progress-bar
-    sys.stdout.write("[%s]" % (" " * file_counter))
-    sys.stdout.flush()
+    #sys.stdout.write("[%s]" % (" " * file_counter))
+    #sys.stdout.flush()
     # after '[' return to start of line
-    sys.stdout.write("\b" * (file_counter + 1))
+    #sys.stdout.write("\b" * (file_counter + 1))
 
     # proceed all found files
+    cnt_file = 1
     for file in files:
         md5 = getMd5Sum(results.dir + '/' + file)
         entry = inDatabase(db_filename, md5)
-        sys.stdout.write("-")
+        #sys.stdout.write("-")
+        #sys.stdout.flush()
+        # 2016.07.16 https://stackoverflow.com/questions/517127/how-do-i-write-output-in-same-place-on-the-console
+        sys.stdout.write("progress [%d / %d]   \r" % (cnt_file, file_counter) )
         sys.stdout.flush()
+        cnt_file = cnt_file + 1
         if entry == False:
             copyFileInWrkDir(results.dir + '/' + file, home_dir)
             if not os.path.isfile(home_dir + '/' + "newfile"):
