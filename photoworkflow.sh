@@ -22,6 +22,9 @@ working_dir=/media/noopi/Data/Bilder/DigiCam
 #photoworkflow user dir, here are the database and the temporary files stored
 home_dir=/home/$USER/.photoworkflow
 
+#error log file
+timestamp=$(date +"%Y.%m.%d-%H:%M:%S")
+error_file=$home_dir/$timestamp"_error.log"
 
 #check, if working_dir exists, if not exit
 if [ ! -d $working_dir ]
@@ -54,7 +57,7 @@ for ext in jpg JPG CR2 cr2; do
                   
           #move newfiles with exiftool in your directory structure, change file extension to lower case
           echo "move new images to: "$working_dir
-          exiftool -m '-Directory<DateTimeOriginal' -d "$working_dir/%Y/%Y-%m-%d" -progress *.${ext,,} 2>/dev/null
+          exiftool -m '-Directory<DateTimeOriginal' -d "$working_dir/%Y/%Y-%m-%d" -progress *.${ext,,} 2>$error_file
           rm $home_dir/newfile
           popd &>/dev/null
 
